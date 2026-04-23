@@ -1,0 +1,8 @@
+# Linux-only configs — skip on macOS
+{{ if ne .chezmoi.os "linux" }}
+.config/hypr
+.config/waybar
+.config/walker
+.config/mako
+.config/omarchy
+{{ end }}
