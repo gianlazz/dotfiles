@@ -7,7 +7,7 @@ Personal dotfiles managed with [chezmoi](https://chezmoi.io). Supports multiple 
 | Machine | OS | Hostname | Status |
 |---------|-----|----------|--------|
 | GPD MicroPC | Omarchy Linux (Arch + Hyprland) | `micropc` | ✅ Active |
-| MacBook | macOS | *(to be added)* | 🔜 Planned |
+| MacBook | macOS | `macbook` | ✅ Active |
 
 ## Prerequisites
 
@@ -41,7 +41,7 @@ Create `~/.config/chezmoi/chezmoi.toml` with values appropriate for the machine:
   os_type = "linux"
 ```
 
-**macOS (when adding):**
+**macOS:**
 ```toml
 [data]
   machine = "macbook"
@@ -92,7 +92,22 @@ To add macOS monitor config, add an `{{ else if eq .machine "macbook" }}` block 
 ### Shared (all machines)
 | Path | Description |
 |------|-------------|
-| `dot_config/git/config` | Git aliases, defaults, diff settings |
+| `dot_config/git/config` | Git aliases, defaults, diff settings, user identity |
+
+### macOS only (skipped on Linux)
+| Path | Description |
+|------|-------------|
+| `dot_zshrc` | Zsh config — oh-my-zsh, NVM, PATH, aliases |
+| `dot_zprofile` | Login shell — Homebrew env setup |
+| `dot_zshenv` | Env vars — Cargo/Rust path |
+| `Brewfile` | Homebrew packages, casks, and taps |
+
+### Linux / Omarchy only (skipped on macOS)
+| Path | Description |
+|------|-------------|
+| `dot_config/hypr/` | Hyprland WM — bindings, look & feel, idle, lock, autostart, monitor (templated), input |
+| `dot_config/waybar/` | Status bar layout and styles |
+| `dot_config/walker/` | App launcher |
 | `dot_config/ghostty/config` | Ghostty terminal |
 | `dot_config/alacritty/alacritty.toml` | Alacritty terminal |
 | `dot_config/kitty/kitty.conf` | Kitty terminal |
@@ -102,13 +117,6 @@ To add macOS monitor config, add an `{{ else if eq .machine "macbook" }}` block 
 | `dot_config/lazygit/` | Lazygit |
 | `dot_config/btop/btop.conf` | btop system monitor |
 | `dot_config/fastfetch/config.jsonc` | Fastfetch |
-
-### Linux / Omarchy only (skipped on macOS)
-| Path | Description |
-|------|-------------|
-| `dot_config/hypr/` | Hyprland WM — bindings, look & feel, idle, lock, autostart, monitor (templated), input |
-| `dot_config/waybar/` | Status bar layout and styles |
-| `dot_config/walker/` | App launcher |
 | `dot_config/omarchy/hooks/` | Omarchy automation hooks |
 | `dot_config/omarchy/themes/` | Custom themes (currently empty, ready for use) |
 

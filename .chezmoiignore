@@ -1,3 +1,14 @@
+# Repo files — never apply to home directory
+README.md
+
+# macOS-only files — skip on Linux
+{{ if ne .chezmoi.os "darwin" }}
+.zshrc
+.zprofile
+.zshenv
+Brewfile
+{{ end }}
+
 # Linux-only configs — skip on macOS
 {{ if ne .chezmoi.os "linux" }}
 .config/hypr
@@ -5,4 +16,13 @@
 .config/walker
 .config/mako
 .config/omarchy
+.config/alacritty
+.config/btop
+.config/fastfetch
+.config/ghostty
+.config/kitty
+.config/lazygit
+.config/nvim
+.config/starship.toml
+.config/tmux
 {{ end }}

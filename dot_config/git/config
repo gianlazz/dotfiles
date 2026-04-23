@@ -1,5 +1,9 @@
 # See https://git-scm.com/docs/git-config
 
+[user]
+	name = Gian Lazzarini
+	email = 1166579+gianlazz@users.noreply.github.com
+
 [alias]
 	co = checkout
 	br = branch
