@@ -66,9 +66,12 @@ chezmoi maps files in `~/.local/share/chezmoi/` to their destinations using nami
 
 | Source name | Destination |
 |-------------|-------------|
+| `dot_config/git/config` | `~/.config/git/config` |
+| `dot_zshrc` | `~/.zshrc` |
+| `dot_zprofile` | `~/.zprofile` |
+| `Brewfile` | `~/Brewfile` |
 | `dot_config/hypr/bindings.conf` | `~/.config/hypr/bindings.conf` |
 | `dot_config/hypr/monitors.conf.tmpl` | `~/.config/hypr/monitors.conf` (rendered) |
-| `dot_config/git/config` | `~/.config/git/config` |
 
 ### OS filtering (`.chezmoiignore`)
 
@@ -170,21 +173,25 @@ chezmoi apply ~/.config/hypr/bindings.conf
 
 ---
 
-## Adding macOS Dotfiles
+## Setting Up on a New Mac
 
-When setting up the MacBook:
-
-1. Install chezmoi (`brew install chezmoi`)
-2. Create `~/.config/chezmoi/chezmoi.toml` with `machine = "macbook"` and `os_type = "darwin"`
-3. Run `chezmoi init --apply https://github.com/gianlazz/dotfiles.git`
-4. Linux-only configs will be automatically skipped
-5. Add any macOS-specific files (`chezmoi add ~/.zshrc` etc.), commit, push
-
-To add machine-specific macOS blocks to existing templates (e.g. `monitors.conf.tmpl`):
+1. Install chezmoi: `brew install chezmoi`
+2. Create `~/.config/chezmoi/chezmoi.toml`:
+```toml
+[data]
+  machine = "macbook"
+  os_type = "darwin"
 ```
-{{ else if eq .machine "macbook" }}
-monitor = eDP-1, preferred, auto, 2
+3. Apply dotfiles:
+```bash
+chezmoi init --apply https://github.com/gianlazz/dotfiles.git
 ```
+4. Install Homebrew packages, casks, and VS Code extensions:
+```bash
+brew bundle install --file=~/Brewfile
+```
+
+Linux-only configs are automatically skipped. After this, git, zsh, and VS Code extensions are all configured.
 
 ---
 
