@@ -11,6 +11,8 @@ Brewfile
 
 # Linux-only configs — skip on macOS
 {{ if ne .chezmoi.os "linux" }}
+.bashrc
+.bash_profile
 .config/hypr
 .config/waybar
 .config/walker
