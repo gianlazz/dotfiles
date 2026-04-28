@@ -11,7 +11,7 @@ misc {
     vfr=false
 }
 # Restart waybar when monitors connect/disconnect
-exec-once = socat - UNIX-CONNECT:$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock | while IFS= read -r line; do case "$line" in monitoradded*|monitorremoved*) omarchy-restart-waybar ;; esac; done
+exec-once = socat -u UNIX-CONNECT:$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock - | while IFS= read -r line; do case "$line" in monitoradded*|monitorremoved*) sleep 1 && omarchy-restart-waybar ;; esac; done
 {{ end -}}
 
 # viture (primary when connected)
