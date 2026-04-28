@@ -4,14 +4,11 @@
 
 {{ if eq .machine "micropc" -}}
 # gpd micropc
-# Built-in display: mirrors DP-1 when connected, works standalone otherwise
-monitor=DSI-1,preferred,0x0,1.5,transform,3,mirror,DP-1
+monitor=DSI-1,preferred,0x0,1.5,transform,3
 misc {
     vrr=0
     vfr=false
 }
-# Restart waybar when monitors connect/disconnect
-exec-once = socat -u UNIX-CONNECT:$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock - | while IFS= read -r line; do case "$line" in monitoradded*|monitorremoved*) sleep 1 && omarchy-restart-waybar ;; esac; done
 {{ end -}}
 
 # viture (primary when connected)
