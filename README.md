@@ -119,3 +119,46 @@ restoring, reload Hyprland:
 ```bash
 hyprctl reload
 ```
+
+---
+
+## Bailing Out of a Change Cleanly
+
+Reverting git changes alone is **not enough** — stow symlinks in `~` still point
+at the (now-deleted or reverted) files in the repo, leaving broken links.
+
+Full bail-out procedure:
+
+**Step 1 — Unstow the affected packages first** (removes symlinks):
+```bash
+stow -d ~/Development/dotfiles -t ~ -D hypr waybar bin bash git
+```
+
+**Step 2 — Revert the repo** (undo uncommitted changes or reset to a commit):
+```bash
+# Discard all uncommitted changes:
+git -C ~/Development/dotfiles checkout -- .
+git -C ~/Development/dotfiles clean -fd
+
+# Or reset to a specific commit:
+git -C ~/Development/dotfiles reset --hard <commit>
+```
+
+**Step 3 — Re-stow** the packages you still want:
+```bash
+stow -d ~/Development/dotfiles -t ~ hypr waybar bash git
+```
+
+**Step 4 — Restore any Omarchy-managed files** that were overridden and are now
+missing (check for broken symlinks first):
+```bash
+find ~/.config/hypr ~/.config/waybar ~/.local/bin -maxdepth 3 -xtype l 2>/dev/null
+# For each broken link, restore via Omarchy:
+omarchy-refresh-config hypr/bindings.conf
+# ...etc
+```
+
+**Step 5 — Reload Hyprland:**
+```bash
+hyprctl reload
+```
