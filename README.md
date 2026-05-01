@@ -99,3 +99,23 @@ Remove a package (unlinks symlinks, does not delete live files):
 ```bash
 stow -D -t ~ newpkg
 ```
+
+---
+
+## Recovering a Broken Omarchy Config
+
+If a stow symlink breaks an Omarchy-managed file (e.g. after reverting a dotfiles
+change), restore it from Omarchy's template:
+
+```bash
+omarchy-refresh-config hypr/bindings.conf   # restore keybindings
+omarchy-refresh-config hypr/monitors.conf   # restore monitor config
+omarchy-refresh-config hypr/autostart.conf  # restore autostart
+```
+
+The pattern is `omarchy-refresh-config <relative-path-under-~/.config/>`. After
+restoring, reload Hyprland:
+
+```bash
+hyprctl reload
+```
