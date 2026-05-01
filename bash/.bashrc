@@ -36,3 +36,4 @@ if [ -n "$NVM_DIR" ]; then
 	cd() { builtin cd "$@" && load-nvmrc; }
 	load-nvmrc
 fi
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
