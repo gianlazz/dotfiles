@@ -104,6 +104,8 @@ stow -D -t ~ newpkg
 
 ## Recovering a Broken Omarchy Config
 
+When using AI assistance for Omarchy config changes, review [The Omarchy Skill](https://learn.omacom.io/2/the-omarchy-manual/107/ai#the-omarchy-skill), and be ready to rollback changes or even invoking `omarchy-reinstall-configs, if the agent makes a mess of everything.`
+
 If a stow symlink breaks an Omarchy-managed file (e.g. after reverting a dotfiles
 change), restore it from Omarchy's template:
 
