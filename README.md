@@ -79,6 +79,13 @@ External display: `DP-1` (Viture, 1.5 scale)
 If you change `limine/etc/default/limine` (e.g. kernel rotation params), run
 `sudo limine-update` so `/boot/limine.conf` and the UKI are regenerated.
 
+`/boot` is typically an ESP (FAT), so it does not support symlinks. Keep a
+tracked copy at `limine/boot/limine.conf` and sync it manually when needed:
+
+```bash
+sudo cp ~/Development/dotfiles/limine/boot/limine.conf /boot/limine.conf
+```
+
 ---
 
 ## Daily Workflow
