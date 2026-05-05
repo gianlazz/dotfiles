@@ -76,6 +76,19 @@ Display: `DSI-1` (built-in, 270° rotation)
 Touchscreen: `iltp7807:00-222a:fff1`
 External display: `DP-1` (Viture, 1.5 scale)
 
+### Middle-button Scroll (GPD MicroPC 2)
+
+Vendored source: `drivers/gpd-micropc2-linux-scroll/`
+
+```bash
+cd ~/Development/dotfiles/drivers/gpd-micropc2-linux-scroll
+./setup-middle-scroll.sh            # install
+./setup-middle-scroll.sh --status   # status
+./setup-middle-scroll.sh --reconfigure
+./setup-middle-scroll.sh --remove
+journalctl --user -u gpd-scroll -f  # logs
+```
+
 If you change `limine/etc/default/limine` (e.g. kernel rotation params), run
 `sudo limine-update` so `/boot/limine.conf` and the UKI are regenerated.
 
