@@ -50,6 +50,7 @@ stow -t ~ hypr bash git
 | `hypr` | `~/.config/hypr/` | Hyprland monitor config, autostart, auto-rotate script |
 | `bash` | `~/.bashrc` | Omarchy base shell + nvm + auto-switch node |
 | `git` | `~/.config/git/config` | Git identity, aliases, rebase pull, histogram diff |
+| `limine` | `/etc/default/limine` | Limine bootloader defaults for the Omarchy install |
 
 ---
 
@@ -92,6 +93,16 @@ mkdir -p newpkg/.config/newpkg
 # ... add files ...
 stow -t ~ newpkg
 git add -A && git commit -m "add newpkg stow package"
+```
+
+For packages that target system paths instead of your home directory, mirror the
+target path inside the package and stow against `/`:
+
+```bash
+mkdir -p limine/etc/default
+sudo stow --adopt -t / limine   # for an existing target file
+# or move the file aside first, then run: stow -t / limine
+stow -t / limine
 ```
 
 Remove a package (unlinks symlinks, does not delete live files):
