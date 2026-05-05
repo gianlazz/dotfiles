@@ -56,6 +56,10 @@ stow -t ~ hypr bash git
 
 ## Auto-rotation (GPD MicroPC 2)
 
+https://wiki.archlinux.org/title/GPD_MicroPC_2
+
+https://wiki.archlinux.org/title/Tablet_PC#Screen_rotation
+
 Requires `iio-sensor-proxy`:
 
 ```bash
@@ -71,6 +75,9 @@ display + touchscreen transform. It is started automatically on login via
 Display: `DSI-1` (built-in, 270° rotation)
 Touchscreen: `iltp7807:00-222a:fff1`
 External display: `DP-1` (Viture, 1.5 scale)
+
+If you change `limine/etc/default/limine` (e.g. kernel rotation params), run
+`sudo limine-update` so `/boot/limine.conf` and the UKI are regenerated.
 
 ---
 
