@@ -10,6 +10,7 @@ socat -U - "UNIX-CONNECT:$SOCKET" | while read -r event; do
   case "$event" in
     monitorremoved\>\>*|monitorremovedv2\>\>*)
       ~/.config/hypr/scripts/monitor-internal-toggle.sh recover
+      ~/.config/hypr/scripts/monitor-internal-mirror-toggle.sh recover
       ;;
   esac
 done
