@@ -37,7 +37,6 @@
               home.file.".config/omarchy".enable = false;
               home.file.".config/alacritty".enable = false;
               home.file.".config/btop/themes".enable = false;
-              home.file.".config/waybar".enable = false;
             }
           ];
         };

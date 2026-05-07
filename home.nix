@@ -64,7 +64,13 @@ in
   home.file.".config/hypr/scripts/monitor-recover-watch.sh".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/hypr/.config/hypr/scripts/monitor-recover-watch.sh";
 
-  # Shell
+  # Waybar config — direct symlinks to repo (live-editable, tracked in git)
+  home.file.".config/waybar/config.jsonc".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/waybar/.config/waybar/config.jsonc";
+  home.file.".config/waybar/style.css".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/waybar/.config/waybar/style.css";
+
+  # Shell — direct symlinks to repo (live-editable, tracked in git)
   home.file.".bashrc".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/bash/.bashrc";
 }
