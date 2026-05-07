@@ -4,22 +4,22 @@
   # Essential packages
   home.packages = with pkgs; [
     nextcloud-client
-    bitwarden
+    bitwarden-desktop
     # anything else from https://search.nixos.org/packages
   ];
 
   # Git configuration
   programs.git = {
     enable = true;
-    userName = "Gian Lazzarini";
-    userEmail = "1166579+gianlazz@users.noreply.github.com";
-    aliases = {
-      co = "checkout";
-      br = "branch";
-      ci = "commit";
-      st = "status";
-    };
-    extraConfig = {
+    settings = {
+      user.name = "Gian Lazzarini";
+      user.email = "1166579+gianlazz@users.noreply.github.com";
+      alias = {
+        co = "checkout";
+        br = "branch";
+        ci = "commit";
+        st = "status";
+      };
       init.defaultBranch = "master";
       pull.rebase = true;
       push.autoSetupRemote = true;
