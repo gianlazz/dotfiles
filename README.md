@@ -9,6 +9,8 @@ Personal dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/).
 | GPD MicroPC 2 | Omarchy Linux (Arch + Hyprland) | `stow` |
 | GPD MicroPC (gen 1) / MacBook | Legacy chezmoi setup | `main` |
 
+[Omarchy + Nix Home Manager Integration](https://github.com/basecamp/omarchy/discussions/987)
+
 ---
 
 ## Prerequisites
