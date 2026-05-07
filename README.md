@@ -57,6 +57,7 @@ sudo cp ~/Development/dotfiles/limine/boot/limine.conf /boot/limine.conf
 | git config, aliases | Nix Home Manager | `home.nix` → `~/.config/git/config` |
 | Packages (nextcloud, bitwarden) | Nix Home Manager | `home.nix` → `~/.nix-profile/` |
 | Hyprland (monitors, input, bindings, autostart, scripts) | Nix Home Manager | `home.nix` → `~/.config/hypr/` (symlinked to repo) |
+| Waybar (config, style) | Nix Home Manager | `home.nix` → `~/.config/waybar/` (symlinked to repo) |
 | bash / .bashrc | Nix Home Manager | `home.nix` → `~/.bashrc` (symlinked to repo) |
 | Limine bootloader | Manual copy | `limine/boot/limine.conf` → `/boot/limine.conf` |
 
@@ -132,6 +133,12 @@ Hyprland auto-reloads on save. After any hypr config change, validate:
 
 ```bash
 hyprctl reload && hyprctl configerrors
+```
+
+Waybar does **not** auto-reload — run after waybar config/style changes:
+
+```bash
+omarchy restart waybar
 ```
 
 ### Adding/removing managed files or packages
