@@ -17,15 +17,9 @@
       userConfigs = {
         # Primary user configuration
         main = {
-          username = "<username>";  # Replace with your username
-          homeDirectory = "/home/<username>";  # Replace with your home path
+          username = "gian";
+          homeDirectory = "/home/gian";
         };
-
-        # Add more configurations as needed
-        # work = {
-        #   username = "<work-username>";
-        #   homeDirectory = "/home/<work-username>";
-        # };
       };
 
       mkHomeConfig = name: config:
@@ -44,6 +38,7 @@
               home.file.".config/hypr".enable = false;
               home.file.".config/alacritty".enable = false;
               home.file.".config/btop/themes".enable = false;
+              home.file.".config/waybar".enable = false;
             }
           ];
         };
