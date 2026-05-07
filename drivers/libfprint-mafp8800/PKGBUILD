@@ -1,0 +1,52 @@
+# Maintainer and package info
+pkgname=libfprint-mafp8800
+pkgver=1.0
+pkgrel=1
+pkgdesc="Proprietary driver for MAFP8800 fingerprint sensor"
+arch=('x86_64')
+license=('custom')
+groups=('fprint')
+depends=('dkms' 'fprintd')
+makedepends=('git' 'tar' 'linux-headers')
+conflicts=('libfprint')
+provides=('libfprint' 'libfprint-2.so=2-64')
+source=("libfprint-mafp8800-${pkgver}.tar.gz")
+options=('!debug')
+sha256sums=('92d4029ccdf35f4ff2c1f64cf4e4facbd3c4aa5f1b9777d495b5a5a064b9a5e7')
+
+package() {
+    cd ${pkgname}-${pkgver}
+
+    # Install udev rule
+    install -Dm644 "rule/70-mafp8800.rules" "$pkgdir/etc/udev/rules.d/70-mafp8800.rules"
+
+    # Install shared library & create symlinks
+    cp -r "libfprint/usr" "$pkgdir/"
+    ln -s "libfprint-2.so.2.0.0" "${pkgdir}/usr/lib/libfprint-2.so.2"
+    ln -s "libfprint-2.so.2.0.0" "${pkgdir}/usr/lib/libfprint-2.so"
+
+    # Create DKMS source directory
+    mkdir -p "$pkgdir/usr/src/mafp8800_driver-${pkgver}"
+
+    # Place DKMS driver
+    install -Dm644 "driver/mafp8800_driver.c" "$pkgdir/usr/src/mafp8800_driver-${pkgver}/"
+    install -Dm644 "driver/Makefile" "$pkgdir/usr/src/mafp8800_driver-${pkgver}/"
+    install -Dm644 "driver/dkms.conf" "$pkgdir/usr/src/mafp8800_driver-${pkgver}/"
+
+}
+
+# DKMS hooks
+post_install() {
+    dkms add -m mafp8800_driver -v ${pkgver}
+    dkms build -m mafp8800_driver -v ${pkgver}
+    dkms install -m mafp8800_driver -v ${pkgver}
+}
+
+post_upgrade() {
+    dkms build -m mafp8800_driver -v ${pkgver}
+    dkms install -m mafp8800_driver -v ${pkgver}
+}
+
+pre_remove() {
+    dkms remove -m mafp8800_driver -v ${pkgver} --all
+}

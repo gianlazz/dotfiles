@@ -1,206 +1,239 @@
 # gianlazz/dotfiles
 
-Personal dotfiles managed with [chezmoi](https://chezmoi.io). Supports multiple machines and operating systems from a single repo.
+Personal dotfiles managed with [Nix Home Manager](https://nix-community.github.io/home-manager/).
+
+[Omarchy + Nix Home Manager Integration](https://github.com/basecamp/omarchy/discussions/987)
 
 ## Machines
 
-| Machine | OS | Hostname | Status |
-|---------|-----|----------|--------|
-| GPD MicroPC | Omarchy Linux (Arch + Hyprland) | `micropc` | ✅ Active |
-| MacBook | macOS | `macbook` | ✅ Active |
+| Machine | OS | Branch |
+|---------|-----|--------|
+| GPD MicroPC 2 | Omarchy Linux (Arch + Hyprland) | `nix-hm` |
+| GPD MicroPC (gen 1) / MacBook | Legacy chezmoi setup | `main` |
+
+---
 
 ## Prerequisites
 
-- [chezmoi](https://chezmoi.io/install/) installed
-- A `~/.config/chezmoi/chezmoi.toml` created locally (see below — this file is **not** in the repo)
+```bash
+# Nix (multi-user daemon mode recommended)
+sh <(curl -L https://nixos.org/nix/install) --daemon
+
+# Enable flakes (after install, before first use)
+mkdir -p ~/.config/nix
+echo "experimental-features = nix-flakes nix-command" >> ~/.config/nix/nix.conf
+```
+
+---
 
 ## Setup on a New Machine
 
-### 1. Install chezmoi
-
-**Arch / Omarchy Linux:**
 ```bash
-sudo pacman -S chezmoi
+git clone https://github.com/gianlazz/dotfiles.git ~/Development/dotfiles
+cd ~/Development/dotfiles
+git checkout nix-hm
 ```
 
-**macOS:**
-```bash
-brew install chezmoi
-```
-
-### 2. Create the machine identity file
-
-This file is **never committed** — it stays local and tells chezmoi which machine it's on.
-
-Create `~/.config/chezmoi/chezmoi.toml` with values appropriate for the machine:
-
-**Omarchy Linux (micropc):**
-```toml
-[data]
-  machine = "micropc"
-  os_type = "linux"
-```
-
-**macOS:**
-```toml
-[data]
-  machine = "macbook"
-  os_type = "darwin"
-```
-
-### 3. Apply dotfiles
+Apply Home Manager (manages all dotfiles + packages):
 
 ```bash
-chezmoi init --apply https://github.com/gianlazz/dotfiles.git
+nix run home-manager -- switch --flake .#main
 ```
 
-This clones the repo to `~/.local/share/chezmoi/` and applies all files appropriate for the current machine/OS.
+Log out and back in so Nix-installed apps appear in the launcher.
+
+For limine (system path under `/etc/`, cannot be managed by HM), sync manually after changes:
+
+```bash
+sudo cp ~/Development/dotfiles/limine/boot/limine.conf /boot/limine.conf
+```
 
 ---
 
-## How It Works
+## What Manages What
 
-### chezmoi source → live files
+| Config | Tool | Location |
+|--------|------|----------|
+| git config, aliases | Nix Home Manager | `home.nix` → `~/.config/git/config` |
+| Packages (nextcloud, bitwarden) | Nix Home Manager | `home.nix` → `~/.nix-profile/` |
+| Hyprland (monitors, input, bindings, autostart, scripts) | Nix Home Manager | `home.nix` → `~/.config/hypr/` (symlinked to repo) |
+| Waybar (config, style) | Nix Home Manager | `home.nix` → `~/.config/waybar/` (symlinked to repo) |
+| bash / .bashrc | Nix Home Manager | `home.nix` → `~/.bashrc` (symlinked to repo) |
+| Limine bootloader | Manual copy | `limine/boot/limine.conf` → `/boot/limine.conf` |
 
-chezmoi maps files in `~/.local/share/chezmoi/` to their destinations using naming conventions:
-
-| Source name | Destination |
-|-------------|-------------|
-| `dot_config/git/config` | `~/.config/git/config` |
-| `dot_zshrc` | `~/.zshrc` |
-| `dot_zprofile` | `~/.zprofile` |
-| `Brewfile` | `~/Brewfile` |
-| `dot_config/hypr/bindings.conf` | `~/.config/hypr/bindings.conf` |
-| `dot_config/hypr/monitors.conf.tmpl` | `~/.config/hypr/monitors.conf` (rendered) |
-
-### OS filtering (`.chezmoiignore`)
-
-Linux-only configs (Hyprland, Waybar, Omarchy, etc.) are automatically skipped on macOS via `.chezmoiignore`.
-
-### Machine-specific configs (templates)
-
-Files ending in `.tmpl` are Go templates rendered using the `machine` and `os_type` values from `chezmoi.toml`.
-
-Currently templated:
-- `dot_config/hypr/monitors.conf.tmpl` — display config differs per machine
-
-Example: when `machine = "micropc"`, the GPD's rotated DSI display config is inserted. On any other machine that block is omitted and only the commented examples remain.
-
-To add macOS monitor config, add an `{{ else if eq .machine "macbook" }}` block to `monitors.conf.tmpl`.
+Hyprland configs and `.bashrc` use `mkOutOfStoreSymlink` — they symlink directly to the repo files and are live-editable without re-running `home-manager switch`. Run `home-manager switch` only when adding/removing managed files or changing packages.
 
 ---
 
-## What's Tracked
+## Auto-rotation (GPD MicroPC 2)
 
-### Shared (all machines)
-| Path | Description |
-|------|-------------|
-| `dot_config/git/config` | Git aliases, defaults, diff settings, user identity |
+https://wiki.archlinux.org/title/GPD_MicroPC_2
 
-### macOS only (skipped on Linux)
-| Path | Description |
-|------|-------------|
-| `dot_zshrc` | Zsh config — oh-my-zsh, NVM, PATH, aliases |
-| `dot_zprofile` | Login shell — Homebrew env setup |
-| `dot_zshenv` | Env vars — Cargo/Rust path |
-| `Brewfile` | Homebrew packages, casks, and taps |
+https://wiki.archlinux.org/title/Tablet_PC#Screen_rotation
 
-### Linux / Omarchy only (skipped on macOS)
-| Path | Description |
-|------|-------------|
-| `dot_config/hypr/` | Hyprland WM — bindings, look & feel, idle, lock, autostart, monitor (templated), input |
-| `dot_config/waybar/` | Status bar layout and styles |
-| `dot_config/walker/` | App launcher |
-| `dot_config/ghostty/config` | Ghostty terminal |
-| `dot_config/alacritty/alacritty.toml` | Alacritty terminal |
-| `dot_config/kitty/kitty.conf` | Kitty terminal |
-| `dot_config/nvim/` | LazyVim config |
-| `dot_config/starship.toml` | Shell prompt |
-| `dot_config/tmux/tmux.conf` | Tmux |
-| `dot_config/lazygit/` | Lazygit |
-| `dot_config/btop/btop.conf` | btop system monitor |
-| `dot_config/fastfetch/config.jsonc` | Fastfetch |
-| `dot_config/omarchy/hooks/` | Omarchy automation hooks |
-| `dot_config/omarchy/themes/` | Custom themes (currently empty, ready for use) |
+Requires `iio-sensor-proxy`:
 
-### What is NOT tracked
-| Path | Reason |
-|------|--------|
-| `~/.config/mako/config` | Omarchy-managed symlink into `current/theme/` — recreated on theme change |
-| `~/.config/omarchy/current/` | Omarchy runtime state (current theme, fonts) |
-| `~/.config/omarchy/branding/` | Omarchy-managed |
-| `~/.config/omarchy/themed/` | Omarchy-generated files |
-| `~/.local/share/omarchy/` | Omarchy source — managed by `omarchy-update`, never edit |
-| `~/.config/chezmoi/chezmoi.toml` | Machine identity — local only, never committed |
+```bash
+sudo pacman -S iio-sensor-proxy
+sudo systemctl enable --now iio-sensor-proxy
+```
+
+The `hypr` package includes `~/.config/hypr/scripts/auto-rotate.sh` which listens
+for orientation changes via `monitor-sensor` and applies the correct Hyprland
+display + touchscreen transform. It is started automatically on login via
+`autostart.conf`.
+
+Display: `DSI-1` (built-in, 270° rotation)
+Touchscreen: `iltp7807:00-222a:fff1`
+External display: `DP-1` (Viture, 1.5 scale)
+
+### Middle-button Scroll (GPD MicroPC 2)
+
+Vendored source: `drivers/gpd-micropc2-linux-scroll/`
+
+```bash
+cd ~/Development/dotfiles/drivers/gpd-micropc2-linux-scroll
+./setup-middle-scroll.sh            # install
+./setup-middle-scroll.sh --status   # status
+./setup-middle-scroll.sh --reconfigure
+./setup-middle-scroll.sh --remove
+journalctl --user -u gpd-scroll -f  # logs
+```
+
+If you change `limine/etc/default/limine` (e.g. kernel rotation params), run
+`sudo limine-update` so `/boot/limine.conf` and the UKI are regenerated.
+
+`/boot` is typically an ESP (FAT), so it does not support symlinks. Keep a
+tracked copy at `limine/boot/limine.conf` and sync it manually when needed:
+
+```bash
+sudo cp ~/Development/dotfiles/limine/boot/limine.conf /boot/limine.conf
+```
 
 ---
 
 ## Daily Workflow
 
-### After changing a config file
+### Editing hypr configs or .bashrc
+
+Edit directly in the repo — symlinks are live:
 
 ```bash
-# If the file is already tracked, chezmoi picks up the change automatically.
-# Just commit:
-chezmoi cd
+# e.g. edit monitors, bindings, input, autostart, scripts, .bashrc
+$EDITOR ~/Development/dotfiles/hypr/.config/hypr/monitors.conf
+
+# Commit as usual
+cd ~/Development/dotfiles
 git add -A
 git commit -m "describe the change"
 git push
-
-# If it's a new file you want to start tracking:
-chezmoi add ~/.config/some/new/file
-chezmoi cd
-git add -A && git commit -m "track new file" && git push
 ```
 
-### Pulling changes on another machine
+Hyprland auto-reloads on save. After any hypr config change, validate:
 
 ```bash
-chezmoi update   # pulls from GitHub and applies in one step
+hyprctl reload && hyprctl configerrors
 ```
 
-### Checking what would change before applying
+Waybar does **not** auto-reload — run after waybar config/style changes:
 
 ```bash
-chezmoi diff
+omarchy restart waybar
 ```
 
-### Resetting a chezmoi-managed file to its source state
+### Adding/removing managed files or packages
+
+Edit `home.nix`, then apply:
 
 ```bash
-chezmoi apply ~/.config/hypr/bindings.conf
+cd ~/Development/dotfiles
+home-manager switch --flake .#main
+git add -A
+git commit -m "describe the change"
+git push
+```
+
+To roll back to a previous generation:
+
+```bash
+home-manager generations                        # list generations
+home-manager switch --flake .#main --rollback   # go back one
 ```
 
 ---
 
-## Setting Up on a New Mac
+## Recovering a Broken Omarchy Config
 
-1. Install chezmoi: `brew install chezmoi`
-2. Create `~/.config/chezmoi/chezmoi.toml`:
-```toml
-[data]
-  machine = "macbook"
-  os_type = "darwin"
-```
-3. Apply dotfiles:
+When using AI assistance for Omarchy config changes, review [The Omarchy Skill](https://learn.omacom.io/2/the-omarchy-manual/107/ai#the-omarchy-skill), and be ready to rollback changes or even invoking `omarchy-reinstall-configs, if the agent makes a mess of everything.`
+
+If a Home Manager symlink conflicts with an Omarchy-managed file (e.g. after `omarchy update` overwrites a tracked file), restore it from Omarchy's template then re-run HM:
+
 ```bash
-chezmoi init --apply https://github.com/gianlazz/dotfiles.git
-```
-4. Install Homebrew packages, casks, and VS Code extensions:
-```bash
-brew bundle install --file=~/Brewfile
+omarchy refresh config hypr/bindings.conf   # restore keybindings
+omarchy refresh config hypr/monitors.conf   # restore monitor config
+omarchy refresh config hypr/autostart.conf  # restore autostart
+# or reset all hypr configs at once:
+omarchy refresh hyprland
 ```
 
-Linux-only configs are automatically skipped. After this, git, zsh, and VS Code extensions are all configured.
+The pattern is `omarchy refresh config <relative-path-under-~/.config/>`. After
+restoring, reload Hyprland:
+
+```bash
+hyprctl reload
+```
 
 ---
 
-## Omarchy-Specific Notes
+## Bailing Out of a Change Cleanly
 
-Omarchy is an opinionated Arch Linux distro. Key rules:
-- **Never edit** `~/.local/share/omarchy/` — it's managed by git and wiped on `omarchy-update`
-- **Always edit** `~/.config/` — that's the safe user config layer
-- After editing Hyprland configs, they **auto-reload** on save (no restart needed)
-- After editing Waybar, run `omarchy-restart-waybar`
-- To reset a config to Omarchy defaults: `omarchy-refresh-<app>` (creates a timestamped backup first)
-- List all available Omarchy commands: `compgen -c | grep -E '^omarchy-' | sort -u`
+### Rolling back a Home Manager change
+
+```bash
+home-manager switch --flake .#main --rollback
+```
+
+Then revert the repo if needed:
+
+```bash
+git -C ~/Development/dotfiles checkout -- .
+```
+
+### Recovering from a bad hypr/bash edit
+
+Since hypr configs and `.bashrc` are live symlinks into the repo, just revert the file in git:
+
+```bash
+git -C ~/Development/dotfiles checkout -- hypr/.config/hypr/monitors.conf
+# Hyprland auto-reloads; validate:
+hyprctl reload && hyprctl configerrors
+```
+
+### If Omarchy update overwrites a tracked file
+
+`omarchy update` may overwrite files in `~/.config/hypr/`. Since HM uses `mkOutOfStoreSymlink`, the symlink itself survives but the target repo file may be replaced. Check with:
+
+```bash
+git -C ~/Development/dotfiles status
+```
+
+If Omarchy replaced a symlink with a regular file, restore:
+
+```bash
+home-manager switch --flake .#main   # re-creates the symlink
+git -C ~/Development/dotfiles diff   # review any content changes
+```
+
+### Check for broken symlinks
+
+```bash
+find ~/.config/hypr ~/.config/waybar ~/.local/bin -maxdepth 3 -xtype l 2>/dev/null
+# For each broken link, restore via Omarchy:
+omarchy refresh config hypr/bindings.conf
+# ...etc
+```
+
+**Reload Hyprland after any recovery:**
+```bash
+hyprctl reload
+```
