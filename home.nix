@@ -44,6 +44,8 @@ in
 
   # Let Home Manager manage itself
   programs.home-manager.enable = true;
+
+  # Needed for non NixOS linux distro
   targets.genericLinux.enable = true;
 
   # Hyprland config GPD MicroPC 2 — direct symlinks to repo (live-editable, tracked in git)
