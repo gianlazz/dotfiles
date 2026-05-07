@@ -1,6 +1,6 @@
 # gianlazz/dotfiles
 
-Personal dotfiles managed with [Nix Home Manager](https://nix-community.github.io/home-manager/) + [GNU Stow](https://www.gnu.org/software/stow/) (for Omarchy-adjacent configs).
+Personal dotfiles managed with [Nix Home Manager](https://nix-community.github.io/home-manager/).
 
 [Omarchy + Nix Home Manager Integration](https://github.com/basecamp/omarchy/discussions/987)
 
@@ -22,9 +22,6 @@ sh <(curl -L https://nixos.org/nix/install) --daemon
 # Enable flakes (after install, before first use)
 mkdir -p ~/.config/nix
 echo "experimental-features = nix-flakes nix-command" >> ~/.config/nix/nix.conf
-
-# Stow (for hypr/bash/limine packages)
-sudo pacman -S stow
 ```
 
 ---
@@ -37,21 +34,19 @@ cd ~/Development/dotfiles
 git checkout nix-hm
 ```
 
-Apply Nix Home Manager (manages git config + packages):
+Apply Home Manager (manages all dotfiles + packages):
 
 ```bash
 nix run home-manager -- switch --flake .#main
 ```
 
-Apply Stow packages (manages Hyprland config, bash, limine):
+Log out and back in so Nix-installed apps appear in the launcher.
+
+For limine (system path under `/etc/`, cannot be managed by HM), sync manually after changes:
 
 ```bash
-stow -t ~ hypr    # Hyprland config + auto-rotate scripts
-stow -t ~ bash    # .bashrc (nvm, omarchy base)
-stow -t / limine  # Limine bootloader defaults (system path)
+sudo cp ~/Development/dotfiles/limine/boot/limine.conf /boot/limine.conf
 ```
-
-Log out and back in so Nix-installed apps appear in the launcher.
 
 ---
 
@@ -61,17 +56,11 @@ Log out and back in so Nix-installed apps appear in the launcher.
 |--------|------|----------|
 | git config, aliases | Nix Home Manager | `home.nix` → `~/.config/git/config` |
 | Packages (nextcloud, bitwarden) | Nix Home Manager | `home.nix` → `~/.nix-profile/` |
-| Hyprland (monitors, input, bindings, autostart, scripts) | Stow | `hypr/` → `~/.config/hypr/` |
-| bash / .bashrc | Stow | `bash/` → `~/.bashrc` |
-| Limine bootloader | Stow | `limine/` → `/etc/default/limine` |
+| Hyprland (monitors, input, bindings, autostart, scripts) | Nix Home Manager | `home.nix` → `~/.config/hypr/` (symlinked to repo) |
+| bash / .bashrc | Nix Home Manager | `home.nix` → `~/.bashrc` (symlinked to repo) |
+| Limine bootloader | Manual copy | `limine/boot/limine.conf` → `/boot/limine.conf` |
 
-### Updating Home Manager config
-
-Edit `home.nix`, then apply:
-
-```bash
-home-manager switch --flake .#main
-```
+Hyprland configs and `.bashrc` use `mkOutOfStoreSymlink` — they symlink directly to the repo files and are live-editable without re-running `home-manager switch`. Run `home-manager switch` only when adding/removing managed files or changing packages.
 
 ---
 
@@ -124,7 +113,28 @@ sudo cp ~/Development/dotfiles/limine/boot/limine.conf /boot/limine.conf
 
 ## Daily Workflow
 
-### Nix Home Manager changes (packages, git config)
+### Editing hypr configs or .bashrc
+
+Edit directly in the repo — symlinks are live:
+
+```bash
+# e.g. edit monitors, bindings, input, autostart, scripts, .bashrc
+$EDITOR ~/Development/dotfiles/hypr/.config/hypr/monitors.conf
+
+# Commit as usual
+cd ~/Development/dotfiles
+git add -A
+git commit -m "describe the change"
+git push
+```
+
+Hyprland auto-reloads on save. After any hypr config change, validate:
+
+```bash
+hyprctl reload && hyprctl configerrors
+```
+
+### Adding/removing managed files or packages
 
 Edit `home.nix`, then apply:
 
@@ -136,38 +146,11 @@ git commit -m "describe the change"
 git push
 ```
 
-To roll back Home Manager to the previous generation:
+To roll back to a previous generation:
 
 ```bash
-home-manager generations              # list generations
-home-manager switch --flake .#main --rollback
-```
-
-### Stow changes (hypr scripts, bash, limine)
-
-Edit files directly — they are symlinks into the repo:
-
-```bash
-# After making changes:
-cd ~/Development/dotfiles
-git add -A
-git commit -m "describe the change"
-git push
-```
-
-Add a new Stow package targeting system paths:
-
-```bash
-mkdir -p limine/etc/default
-sudo stow --adopt -t / limine   # for an existing target file
-# or move the file aside first, then run: stow -t / limine
-stow -t / limine
-```
-
-Remove a Stow package (unlinks symlinks, does not delete live files):
-
-```bash
-stow -D -t ~ hypr
+home-manager generations                        # list generations
+home-manager switch --flake .#main --rollback   # go back one
 ```
 
 ---
@@ -176,8 +159,7 @@ stow -D -t ~ hypr
 
 When using AI assistance for Omarchy config changes, review [The Omarchy Skill](https://learn.omacom.io/2/the-omarchy-manual/107/ai#the-omarchy-skill), and be ready to rollback changes or even invoking `omarchy-reinstall-configs, if the agent makes a mess of everything.`
 
-If a stow symlink breaks an Omarchy-managed file (e.g. after reverting a dotfiles
-change), restore it from Omarchy's template:
+If a Home Manager symlink conflicts with an Omarchy-managed file (e.g. after `omarchy update` overwrites a tracked file), restore it from Omarchy's template then re-run HM:
 
 ```bash
 omarchy refresh config hypr/bindings.conf   # restore keybindings
@@ -204,35 +186,39 @@ hyprctl reload
 home-manager switch --flake .#main --rollback
 ```
 
-If git config is now wrong, re-run switch with the correct `home.nix`.
+Then revert the repo if needed:
 
-### Rolling back a Stow change
-
-Reverting git changes alone is **not enough** — stow symlinks in `~` still point
-at the (now-deleted or reverted) files in the repo, leaving broken links.
-
-**Step 1 — Unstow the affected packages first** (removes symlinks):
 ```bash
-stow -d ~/Development/dotfiles -t ~ -D hypr bash
-```
-
-**Step 2 — Revert the repo** (undo uncommitted changes or reset to a commit):
-```bash
-# Discard all uncommitted changes:
 git -C ~/Development/dotfiles checkout -- .
-git -C ~/Development/dotfiles clean -fd
-
-# Or reset to a specific commit:
-git -C ~/Development/dotfiles reset --hard <commit>
 ```
 
-**Step 3 — Re-stow** the packages you still want:
+### Recovering from a bad hypr/bash edit
+
+Since hypr configs and `.bashrc` are live symlinks into the repo, just revert the file in git:
+
 ```bash
-stow -d ~/Development/dotfiles -t ~ hypr bash
+git -C ~/Development/dotfiles checkout -- hypr/.config/hypr/monitors.conf
+# Hyprland auto-reloads; validate:
+hyprctl reload && hyprctl configerrors
 ```
 
-**Step 4 — Restore any Omarchy-managed files** that were overridden and are now
-missing (check for broken symlinks first):
+### If Omarchy update overwrites a tracked file
+
+`omarchy update` may overwrite files in `~/.config/hypr/`. Since HM uses `mkOutOfStoreSymlink`, the symlink itself survives but the target repo file may be replaced. Check with:
+
+```bash
+git -C ~/Development/dotfiles status
+```
+
+If Omarchy replaced a symlink with a regular file, restore:
+
+```bash
+home-manager switch --flake .#main   # re-creates the symlink
+git -C ~/Development/dotfiles diff   # review any content changes
+```
+
+### Check for broken symlinks
+
 ```bash
 find ~/.config/hypr ~/.config/waybar ~/.local/bin -maxdepth 3 -xtype l 2>/dev/null
 # For each broken link, restore via Omarchy:
@@ -240,7 +226,7 @@ omarchy refresh config hypr/bindings.conf
 # ...etc
 ```
 
-**Step 5 — Reload Hyprland:**
+**Reload Hyprland after any recovery:**
 ```bash
 hyprctl reload
 ```
