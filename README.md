@@ -6,10 +6,10 @@ Personal dotfiles managed with [Nix Home Manager](https://nix-community.github.i
 
 ## Machines
 
-| Machine | OS | Branch |
-|---------|-----|--------|
-| GPD MicroPC 2 | Omarchy Linux (Arch + Hyprland) | `nix-hm` |
-| GPD MicroPC (gen 1) / MacBook | Legacy chezmoi setup | `main` |
+| Machine | OS | Flake target |
+|---------|-----|--------------|
+| GPD MicroPC 2 | Omarchy Linux (Arch + Hyprland) | `.#micropc2` |
+| MacBook | macOS | `.#macbook` |
 
 ---
 
@@ -37,7 +37,11 @@ git checkout nix-hm
 Apply Home Manager (manages all dotfiles + packages):
 
 ```bash
+# GPD MicroPC 2
 nix run home-manager -- switch --flake .#micropc2
+
+# MacBook
+nix run home-manager -- switch --flake .#macbook
 ```
 
 Log out and back in so Nix-installed apps appear in the launcher.
@@ -52,14 +56,15 @@ sudo cp ~/Development/dotfiles/limine/boot/limine.conf /boot/limine.conf
 
 ## What Manages What
 
-| Config | Tool | Location |
-|--------|------|----------|
-| git config, aliases | Nix Home Manager | `home.nix` → `~/.config/git/config` |
-| Packages (nextcloud, bitwarden) | Nix Home Manager | `home.nix` → `~/.nix-profile/` |
-| Hyprland (monitors, input, bindings, autostart, scripts) | Nix Home Manager | `home.nix` → `~/.config/hypr/` (symlinked to repo) |
-| Waybar (config, style) | Nix Home Manager | `home.nix` → `~/.config/waybar/` (symlinked to repo) |
-| bash / .bashrc | Nix Home Manager | `home.nix` → `~/.bashrc` (symlinked to repo) |
-| Limine bootloader | Manual copy | `limine/boot/limine.conf` → `/boot/limine.conf` |
+| Config | Tool | Nix file | Location |
+|--------|------|----------|----------|
+| git config, aliases | Nix Home Manager | `common.nix` | `~/.config/git/config` |
+| bash / .bashrc | Nix Home Manager | `common.nix` | `~/.bashrc` (symlinked to repo) |
+| mise config | Nix Home Manager | `common.nix` | `~/.config/mise/config.toml` (symlinked to repo) |
+| Packages (nextcloud, bitwarden) | Nix Home Manager | `micropc2.nix` | `~/.nix-profile/` |
+| Hyprland (monitors, input, bindings, autostart, scripts) | Nix Home Manager | `micropc2.nix` | `~/.config/hypr/` (symlinked to repo) |
+| Waybar (config, style) | Nix Home Manager | `micropc2.nix` | `~/.config/waybar/` (symlinked to repo) |
+| Limine bootloader | Manual copy | — | `limine/boot/limine.conf` → `/boot/limine.conf` |
 
 Hyprland configs and `.bashrc` use `mkOutOfStoreSymlink` — they symlink directly to the repo files and are live-editable without re-running `home-manager switch`. Run `home-manager switch` only when adding/removing managed files or changing packages.
 
@@ -143,7 +148,7 @@ omarchy restart waybar
 
 ### Adding/removing managed files or packages
 
-Edit `home.nix`, then apply:
+Edit `common.nix` (shared) or `micropc2.nix` / `macbook.nix` (device-specific), then apply:
 
 ```bash
 cd ~/Development/dotfiles
