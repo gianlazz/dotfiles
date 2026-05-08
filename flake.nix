@@ -6,42 +6,57 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     home-manager = {
       url = "github:nix-community/home-manager";
-      # This ensures home-manager uses the same nixpkgs version
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nix-darwin = {
+      url = "github:LnL7/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nix-homebrew = {
+      url = "github:zhaofengli/nix-homebrew";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = { nixpkgs, home-manager, ... }:
-    let
-      # Define user configurations for different devices
-      userConfigs = {
-        micropc2 = {
-          username = "gian";
-          homeDirectory = "/home/gian";
-          system = "x86_64-linux";
-          modules = [ ./common.nix ./micropc2.nix ];
-        };
-        macbook = {
-          username = "gian";
-          homeDirectory = "/Users/gian";
-          system = "aarch64-darwin";
-          modules = [ ./common.nix ./macbook.nix ];
-        };
-      };
+  outputs = { nixpkgs, home-manager, nix-darwin, nix-homebrew, ... }: {
 
-      mkHomeConfig = name: cfg:
-        home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.${cfg.system};
-          modules = cfg.modules ++ [
-            {
-              home = {
-                inherit (cfg) username homeDirectory;
-                stateVersion = "24.11";
-              };
-            }
-          ];
-        };
-    in {
-      homeConfigurations = builtins.mapAttrs mkHomeConfig userConfigs;
+    # Linux (GPD MicroPC 2) — standalone Home Manager
+    homeConfigurations.micropc2 = home-manager.lib.homeManagerConfiguration {
+      pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      modules = [
+        ./common.nix
+        ./micropc2.nix
+        {
+          home = {
+            username = "gian";
+            homeDirectory = "/home/gian";
+            stateVersion = "24.11";
+          };
+        }
+      ];
     };
+
+    # macOS (MacBook) — nix-darwin with Home Manager module
+    darwinConfigurations.macbook = nix-darwin.lib.darwinSystem {
+      modules = [
+        ./macbook.nix
+        home-manager.darwinModules.home-manager
+        nix-homebrew.darwinModules.nix-homebrew
+        {
+          nix-homebrew = {
+            enable = true;
+            user = "gian";
+          };
+        }
+        {
+          home-manager = {
+            useGlobalPkgs = true;
+            useUserPackages = true;
+            users.gian = { imports = [ ./common.nix ]; };
+          };
+        }
+      ];
+    };
+
+  };
 }

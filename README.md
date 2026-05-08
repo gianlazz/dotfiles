@@ -40,8 +40,11 @@ Apply Home Manager (manages all dotfiles + packages):
 # GPD MicroPC 2
 nix run home-manager -- switch --flake .#micropc2
 
-# MacBook
-nix run home-manager -- switch --flake .#macbook
+# MacBook — first time (bootstraps nix-darwin)
+nix run nix-darwin -- switch --flake .#macbook
+
+# MacBook — subsequent applies
+darwin-rebuild switch --flake .#macbook
 ```
 
 Log out and back in so Nix-installed apps appear in the launcher.
