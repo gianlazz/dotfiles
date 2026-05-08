@@ -15,28 +15,29 @@
     let
       # Define user configurations for different devices
       userConfigs = {
-        # Primary user configuration
-        main = {
+        micropc2 = {
           username = "gian";
           homeDirectory = "/home/gian";
+          system = "x86_64-linux";
+          modules = [ ./common.nix ./micropc2.nix ];
+        };
+        macbook = {
+          username = "gian";
+          homeDirectory = "/Users/gian";
+          system = "aarch64-darwin";
+          modules = [ ./common.nix ./macbook.nix ];
         };
       };
 
-      mkHomeConfig = name: config:
+      mkHomeConfig = name: cfg:
         home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.x86_64-linux;
-          modules = [
-            ./home.nix
+          pkgs = nixpkgs.legacyPackages.${cfg.system};
+          modules = cfg.modules ++ [
             {
               home = {
-                inherit (config) username homeDirectory;
+                inherit (cfg) username homeDirectory;
                 stateVersion = "24.11";
               };
-
-              # Protect Omarchy-managed directories
-              home.file.".config/omarchy".enable = false;
-              home.file.".config/alacritty".enable = false;
-              home.file.".config/btop/themes".enable = false;
             }
           ];
         };

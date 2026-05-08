@@ -37,7 +37,7 @@ git checkout nix-hm
 Apply Home Manager (manages all dotfiles + packages):
 
 ```bash
-nix run home-manager -- switch --flake .#main
+nix run home-manager -- switch --flake .#micropc2
 ```
 
 Log out and back in so Nix-installed apps appear in the launcher.
@@ -147,7 +147,7 @@ Edit `home.nix`, then apply:
 
 ```bash
 cd ~/Development/dotfiles
-home-manager switch --flake .#main
+home-manager switch --flake .#micropc2
 git add -A
 git commit -m "describe the change"
 git push
@@ -157,7 +157,7 @@ To roll back to a previous generation:
 
 ```bash
 home-manager generations                        # list generations
-home-manager switch --flake .#main --rollback   # go back one
+home-manager switch --flake .#micropc2 --rollback   # go back one
 ```
 
 ---
@@ -190,7 +190,7 @@ hyprctl reload
 ### Rolling back a Home Manager change
 
 ```bash
-home-manager switch --flake .#main --rollback
+home-manager switch --flake .#micropc2 --rollback
 ```
 
 Then revert the repo if needed:
@@ -220,7 +220,7 @@ git -C ~/Development/dotfiles status
 If Omarchy replaced a symlink with a regular file, restore:
 
 ```bash
-home-manager switch --flake .#main   # re-creates the symlink
+home-manager switch --flake .#micropc2   # re-creates the symlink
 git -C ~/Development/dotfiles diff   # review any content changes
 ```
 

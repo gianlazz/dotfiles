@@ -1,9 +1,12 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 
 let
   dotfiles = "${config.home.homeDirectory}/Development/dotfiles";
 in
 {
+  # Needed for non NixOS linux distro
+  targets.genericLinux.enable = true;
+
   # Essential packages
   home.packages = with pkgs; [
     nextcloud-client
@@ -11,42 +14,10 @@ in
     # anything else from https://search.nixos.org/packages
   ];
 
-  # Git configuration
-  programs.git = {
-    enable = true;
-    settings = {
-      user.name = "Gian Lazzarini";
-      user.email = "1166579+gianlazz@users.noreply.github.com";
-      alias = {
-        co = "checkout";
-        br = "branch";
-        ci = "commit";
-        st = "status";
-      };
-      init.defaultBranch = "master";
-      pull.rebase = true;
-      push.autoSetupRemote = true;
-      diff = {
-        algorithm = "histogram";
-        colorMoved = "plain";
-        mnemonicPrefix = true;
-      };
-      commit.verbose = true;
-      column.ui = "auto";
-      branch.sort = "-committerdate";
-      tag.sort = "-version:refname";
-      rerere = {
-        enabled = true;
-        autoupdate = true;
-      };
-    };
-  };
-
-  # Let Home Manager manage itself
-  programs.home-manager.enable = true;
-
-  # Needed for non NixOS linux distro
-  targets.genericLinux.enable = true;
+  # Protect Omarchy-managed directories
+  home.file.".config/omarchy".enable = false;
+  home.file.".config/alacritty".enable = false;
+  home.file.".config/btop/themes".enable = false;
 
   # Hyprland config GPD MicroPC 2 — direct symlinks to repo (live-editable, tracked in git)
   home.file.".config/hypr/monitors.conf".source =
@@ -71,12 +42,4 @@ in
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/waybar/.config/waybar/config.jsonc";
   home.file.".config/waybar/style.css".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/waybar/.config/waybar/style.css";
-
-  # Shell — direct symlinks to repo (live-editable, tracked in git)
-  home.file.".bashrc".source =
-    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/bash/.bashrc";
-
-  # Mise config — direct symlink to repo (live-editable, tracked in git)
-  home.file.".config/mise/config.toml".source =
-    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/mise/.config/mise/config.toml";
 }
