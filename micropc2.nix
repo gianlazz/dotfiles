@@ -10,6 +10,7 @@ in
   # Essential packages
   home.packages = with pkgs; [
     nextcloud-client
+    nextcloud-talk-desktop
     bitwarden-desktop
     # anything else from https://search.nixos.org/packages
   ];
