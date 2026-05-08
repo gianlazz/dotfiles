@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, user, homeDirectory, stateVersion, ... }:
 
 {
   nixpkgs.hostPlatform = "aarch64-darwin";
@@ -7,17 +7,17 @@
   security.pam.enableSudoTouchIdAuth = true;
 
   # User definition required by nix-darwin
-  users.users.gian = {
-    name = "gian";
-    home = "/Users/gian";
+  users.users.${user} = {
+    name = user;
+    home = homeDirectory;
   };
 
   # macOS-specific packages (in addition to common.nix)
-  home-manager.users.gian = { pkgs, ... }: {
+  home-manager.users.${user} = { pkgs, ... }: {
     home.packages = with pkgs; [
       # anything else from https://search.nixos.org/packages
     ];
-    home.stateVersion = "24.11";
+    home.stateVersion = stateVersion;
   };
 
   # Homebrew — managed declaratively via nix-homebrew

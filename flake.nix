@@ -18,7 +18,14 @@
     };
   };
 
-  outputs = { nixpkgs, home-manager, nix-darwin, nix-homebrew, ... }: {
+  outputs = { nixpkgs, home-manager, nix-darwin, nix-homebrew, ... }:
+    let
+      linuxUser = "gian";
+      darwinUser = "gian";
+      linuxHome = "/home/${linuxUser}";
+      darwinHome = "/Users/${darwinUser}";
+      stateVersion = "25.11";
+    in {
 
     # Linux (GPD MicroPC 2) — standalone Home Manager
     homeConfigurations.micropc2 = home-manager.lib.homeManagerConfiguration {
@@ -28,9 +35,9 @@
         ./micropc2.nix
         {
           home = {
-            username = "gian";
-            homeDirectory = "/home/gian";
-            stateVersion = "24.11";
+            username = linuxUser;
+            homeDirectory = linuxHome;
+            inherit stateVersion;
           };
         }
       ];
@@ -38,6 +45,7 @@
 
     # macOS (MacBook) — nix-darwin with Home Manager module
     darwinConfigurations.macbook = nix-darwin.lib.darwinSystem {
+      specialArgs = { user = darwinUser; inherit stateVersion; homeDirectory = darwinHome; };
       modules = [
         ./macbook.nix
         home-manager.darwinModules.home-manager
@@ -45,14 +53,14 @@
         {
           nix-homebrew = {
             enable = true;
-            user = "gian";
+            user = darwinUser;
           };
         }
         {
           home-manager = {
             useGlobalPkgs = true;
             useUserPackages = true;
-            users.gian = { imports = [ ./common.nix ]; };
+            users.${darwinUser} = { imports = [ ./common.nix ]; };
           };
         }
       ];
