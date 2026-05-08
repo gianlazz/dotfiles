@@ -10,6 +10,5 @@ source ~/.local/share/omarchy/default/bash/rc
 # Make an alias for invoking commands you use constantly
 # alias p='python'
 
-# fnm (Fast Node Manager) — replaces nvm, reads .nvmrc/.node-version automatically
-eval "$(fnm env --use-on-cd --shell bash)"
-alias nvm='fnm'
+# mise handles node version switching (activated by omarchy)
+alias nvm='mise'

@@ -8,7 +8,6 @@ in
   home.packages = with pkgs; [
     nextcloud-client
     bitwarden-desktop
-    fnm
     # anything else from https://search.nixos.org/packages
   ];
 
@@ -76,4 +75,8 @@ in
   # Shell — direct symlinks to repo (live-editable, tracked in git)
   home.file.".bashrc".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/bash/.bashrc";
+
+  # Mise config — direct symlink to repo (live-editable, tracked in git)
+  home.file.".config/mise/config.toml".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/mise/.config/mise/config.toml";
 }
