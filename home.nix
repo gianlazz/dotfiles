@@ -8,6 +8,7 @@ in
   home.packages = with pkgs; [
     nextcloud-client
     bitwarden-desktop
+    fnm
     # anything else from https://search.nixos.org/packages
   ];
 
