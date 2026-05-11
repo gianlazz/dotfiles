@@ -9,9 +9,16 @@ in
 
   # Essential packages
   home.packages = with pkgs; [
+    bitwarden-desktop
+    tailscale
+    chromium
+    vscode
     nextcloud-client
     nextcloud-talk-desktop
-    bitwarden-desktop
+    transmission_4
+    bambu-studio
+    sunvox
+    asciinema
     # anything else from https://search.nixos.org/packages
   ];
 

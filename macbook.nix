@@ -15,6 +15,13 @@
   # macOS-specific packages (in addition to common.nix)
   home-manager.users.${user} = { pkgs, ... }: {
     home.packages = with pkgs; [
+      bitwarden-desktop
+      tailscale
+      google-chrome
+      vscode
+      transmission_4
+      sunvox
+      asciinema
       # anything else from https://search.nixos.org/packages
     ];
     home.stateVersion = stateVersion;
@@ -26,7 +33,9 @@
     onActivation.autoUpdate = true;
     onActivation.cleanup = "zap"; # remove unlisted casks/brews on switch
     casks = [
-      # "visual-studio-code"
+      nextcloud
+      bambu-studio
+      nextcloud-talk
       # "arc"
     ];
     brews = [
