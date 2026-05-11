@@ -19,6 +19,7 @@ in
     bambu-studio
     sunvox
     asciinema
+    popcorntime
     # anything else from https://search.nixos.org/packages
   ];
 
