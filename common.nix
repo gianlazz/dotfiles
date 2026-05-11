@@ -1,9 +1,16 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   dotfiles = "${config.home.homeDirectory}/Development/dotfiles";
 in
 {
+  # Explicitly allow unfree packages — add new ones here consciously
+  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+    "vscode"
+    "google-chrome"
+    "sunvox"
+  ];
+
   # Let Home Manager manage itself
   programs.home-manager.enable = true;
 

@@ -10,9 +10,9 @@ in
   # Essential packages
   home.packages = with pkgs; [
     bitwarden-desktop
-    tailscale
-    chromium
-    vscode
+    # tailscale # Comes from Omarchy
+    # chromium # Comes from Omarchy
+    # vscode # Comes from Omarchy
     nextcloud-client
     nextcloud-talk-desktop
     transmission_4
