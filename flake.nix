@@ -28,7 +28,7 @@
     in {
 
     # Linux (GPD MicroPC 2) — standalone Home Manager
-    homeConfigurations.micropc2 = home-manager.lib.homeManagerConfiguration {
+    homeConfigurations."${linuxUser}@micropc2" = home-manager.lib.homeManagerConfiguration {
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
       modules = [
         ./common.nix

@@ -14,6 +14,13 @@ in
   # Let Home Manager manage itself
   programs.home-manager.enable = true;
 
+  # nh — Nix helper (https://github.com/nix-community/nh)
+  home.packages = with pkgs; [ nh ];
+
+  home.sessionVariables = {
+    NH_HOME_FLAKE = dotfiles;
+  };
+
   # Git configuration
   programs.git = {
     enable = true;

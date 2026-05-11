@@ -8,7 +8,7 @@ Personal dotfiles managed with [Nix Home Manager](https://nix-community.github.i
 
 | Machine | OS | Flake target |
 |---------|-----|--------------|
-| GPD MicroPC 2 | Omarchy Linux (Arch + Hyprland) | `.#micropc2` |
+| GPD MicroPC 2 | Omarchy Linux (Arch + Hyprland) | `.#"gian@micropc2"` |
 | MacBook | macOS | `.#macbook` |
 
 ---
@@ -37,8 +37,11 @@ git checkout nix-hm
 Apply Home Manager (manages all dotfiles + packages):
 
 ```bash
-# GPD MicroPC 2
-nix run home-manager -- switch --flake .#micropc2
+# GPD MicroPC 2 — first time (bootstraps nh)
+nix run home-manager -- switch --flake '.#gian@micropc2'
+
+# GPD MicroPC 2 — subsequent applies (requires nh in PATH)
+nh home switch
 
 # MacBook — first time (bootstraps nix-darwin)
 nix run nix-darwin -- switch --flake .#macbook
@@ -93,7 +96,7 @@ display + touchscreen transform. It is started automatically on login via
 
 Display: `DSI-1` (built-in, 270° rotation)
 Touchscreen: `iltp7807:00-222a:fff1`
-External display: `DP-1` (Viture, 1.5 scale)
+External display: `DP-1` (Viture, 1.25 scale)
 
 ### Middle-button Scroll (GPD MicroPC 2)
 

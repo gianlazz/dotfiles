@@ -10,5 +10,9 @@ source ~/.local/share/omarchy/default/bash/rc
 # Make an alias for invoking commands you use constantly
 # alias p='python'
 
+
+# Home Manager session variables (packages, env vars set via home.sessionVariables)
+[ -f ~/.nix-profile/etc/profile.d/hm-session-vars.sh ] && source ~/.nix-profile/etc/profile.d/hm-session-vars.sh
+
 # mise handles node version switching (activated by omarchy)
 alias nvm='mise'
