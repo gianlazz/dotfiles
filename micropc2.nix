@@ -21,7 +21,7 @@ in
     asciinema
     popcorntime
     # stremio-linux-shell # Buggy, just use web.stremio.com
-    mpvpaper
+    # mpvpaper # Kills battery
     # anything else from https://search.nixos.org/packages
   ];
 
