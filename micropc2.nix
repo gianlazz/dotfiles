@@ -20,6 +20,7 @@ in
     sunvox
     asciinema
     popcorntime
+    stremio-linux-shell
     # anything else from https://search.nixos.org/packages
   ];
 

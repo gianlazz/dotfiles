@@ -9,6 +9,7 @@ in
     "vscode"
     "google-chrome"
     "sunvox"
+    "stremio-linux-shell"
   ];
 
   # Let Home Manager manage itself
