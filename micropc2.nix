@@ -20,7 +20,8 @@ in
     sunvox
     asciinema
     popcorntime
-    stremio-linux-shell
+    # stremio-linux-shell # Buggy, just use web.stremio.com
+    mpvpaper
     # anything else from https://search.nixos.org/packages
   ];
 
