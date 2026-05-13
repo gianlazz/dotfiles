@@ -31,14 +31,11 @@ in
   home.file.".config/btop/themes".enable = false;
 
   # Hyprland config GPD MicroPC 2 — direct symlinks to repo (live-editable, tracked in git)
-  home.file.".config/hypr/monitors.conf".source =
-    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/hypr/.config/hypr/monitors.conf";
-  home.file.".config/hypr/input.conf".source =
-    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/hypr/.config/hypr/input.conf";
-  home.file.".config/hypr/bindings.conf".source =
-    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/hypr/.config/hypr/bindings.conf";
-  home.file.".config/hypr/autostart.conf".source =
-    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/hypr/.config/hypr/autostart.conf";
+  home.file.".config/hypr/hyprland.conf".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/hypr/.config/hypr/hyprland.conf";
+  home.file.".config/hypr/user-overrides.conf".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/hypr/.config/hypr/user-overrides.conf";
+
   home.file.".config/hypr/scripts/auto-rotate.sh".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/hypr/.config/hypr/scripts/auto-rotate.sh";
   home.file.".config/hypr/scripts/monitor-internal-toggle.sh".source =
