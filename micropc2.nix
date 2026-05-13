@@ -44,6 +44,8 @@ in
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/hypr/.config/hypr/scripts/monitor-internal-mirror-toggle.sh";
   home.file.".config/hypr/scripts/monitor-recover-watch.sh".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/hypr/.config/hypr/scripts/monitor-recover-watch.sh";
+  home.file.".config/hypr/scripts/workspace-follow-external.sh".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/hypr/.config/hypr/scripts/workspace-follow-external.sh";
 
   # Waybar config — direct symlinks to repo (live-editable, tracked in git)
   home.file.".config/waybar/config.jsonc".source =
