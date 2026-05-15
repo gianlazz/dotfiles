@@ -59,5 +59,5 @@ in
 
   # Mise config — direct symlink to repo (live-editable, tracked in git)
   home.file.".config/mise/config.toml".source =
-    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/mise/.config/mise/config.toml";
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/mise/config.toml";
 }
