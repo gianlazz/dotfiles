@@ -58,6 +58,6 @@ in
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/themes/neo-gotham";
 
 # VSCode Neo Gotham theme extension — direct symlink to repo
-#  home.file.".vscode/extensions/local.neo-gotham-1.0.0".source =
-#   config.lib.file.mkOutOfStoreSymlink "${dotfiles}/themes/omarchy-Neo-Gotham-theme/vscode-extension";
+  home.file.".vscode/extensions/local.neo-gotham-1.0.0".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/themes/neo-gotham/vscode-extension";
 }
