@@ -1,7 +1,7 @@
 {
     "name": "theme-aether",
-    "displayName": "Aether Theme",
-    "description": "Aether color theme generated from wallpaper",
+    "displayName": "Neo-Gotham Theme",
+    "description": "Neo-Gotham color theme generated from wallpaper",
     "publisher": "local",
     "version": "1.0.0",
     "engines": {
@@ -11,7 +11,7 @@
     "contributes": {
         "themes": [
             {
-                "label": "Aether",
+                "label": "Neo-Gotham",
                 "uiTheme": "vs-dark",
                 "path": "./themes/aether-color-theme.json"
             }
