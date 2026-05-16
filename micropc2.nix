@@ -52,4 +52,12 @@ in
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/waybar/config.jsonc";
   home.file.".config/waybar/style.css".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/waybar/style.css";
+
+# Neo Gotham omarchy theme — direct symlinks to repo (live-editable, tracked in git)
+  home.file.".config/omarchy/themes/neo-gotham".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/themes/neo-gotham";
+
+# VSCode Neo Gotham theme extension — direct symlink to repo
+#  home.file.".vscode/extensions/local.neo-gotham-1.0.0".source =
+#   config.lib.file.mkOutOfStoreSymlink "${dotfiles}/themes/omarchy-Neo-Gotham-theme/vscode-extension";
 }
