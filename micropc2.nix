@@ -20,6 +20,7 @@ in
       sunvox
       asciinema
       popcorntime
+      tmux
 # stremio-linux-shell # Buggy, just use web.stremio.com
 # mpvpaper # Kills battery
 # anything else from https://search.nixos.org/packages
@@ -46,6 +47,10 @@ in
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/hypr/scripts/monitor-recover-watch.sh";
   home.file.".config/hypr/scripts/workspace-follow-external.sh".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/hypr/scripts/workspace-follow-external.sh";
+
+# Tmux config — direct symlink to repo (live-editable, tracked in git)
+  home.file.".config/tmux/tmux.conf".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/tmux/tmux.conf";
 
 # Waybar config — direct symlinks to repo (live-editable, tracked in git)
   home.file.".config/waybar/config.jsonc".source =
