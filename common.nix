@@ -15,6 +15,10 @@ in
   # Let Home Manager manage itself
   programs.home-manager.enable = true;
 
+  # Tmux — session persistence via resurrect + continuum
+  # (see nix/tmux.nix for the programs.tmux module config)
+  imports = [ ./nix/tmux.nix ];
+
   # nh — Nix helper (https://github.com/nix-community/nh)
   home.packages = with pkgs; [ nh ];
 
