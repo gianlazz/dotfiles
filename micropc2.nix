@@ -47,11 +47,6 @@ in
   home.file.".config/hypr/scripts/workspace-follow-external.sh".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/hypr/scripts/workspace-follow-external.sh";
 
-# Tmux config — direct symlink to repo (live-editable, tracked in git)
-# (switched to programs.tmux nix module in common.nix; kept for reference)
-#  home.file.".config/tmux/tmux.conf".source =
-#    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/tmux/tmux.conf";
-
 # Waybar config — direct symlinks to repo (live-editable, tracked in git)
   home.file.".config/waybar/config.jsonc".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/waybar/config.jsonc";
