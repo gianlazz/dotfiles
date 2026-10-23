@@ -17,7 +17,12 @@ in
 
   # Tmux — session persistence via resurrect + continuum
   # (see tmux/tmux.nix for the programs.tmux module config)
-  imports = [ ./tmux/tmux.nix ];
+  # Neovim — LazyVim configuration
+  # (see nvim/nvim.nix for the programs.neovim module config)
+  imports = [
+    ./tmux/tmux.nix
+    ./nvim/nvim.nix
+  ];
 
   # nh — Nix helper (https://github.com/nix-community/nh)
   home.packages = with pkgs; [ nh ];

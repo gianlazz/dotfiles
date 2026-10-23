@@ -1,6 +1,11 @@
 [tools]
+codex = "latest"
 node = "22.20.0"
+opencode = { version = "latest", allow_builds = ["@opencode/cli"] }
 
 [settings]
 idiomatic_version_file_enable_tools = ["node"]
 auto_install = true
+
+[settings.upgrade]
+auto_prune = false
