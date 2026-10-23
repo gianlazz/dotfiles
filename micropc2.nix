@@ -31,19 +31,19 @@ in
   home.file.".config/btop/themes".enable = false;
 
 # Hyprland config GPD MicroPC 2 — direct symlinks to repo (live-editable, tracked in git)
-  home.file.".config/hypr/hyprland.conf".source =
-    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/hypr/hyprland.conf";
-  home.file.".config/hypr/user-overrides.conf".source =
-    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/hypr/user-overrides.conf";
+  home.file.".config/hypr/monitors.lua".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/hypr/monitors.lua";
+  home.file.".config/hypr/input.lua".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/hypr/input.lua";
+  home.file.".config/hypr/bindings.lua".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/hypr/bindings.lua";
+  home.file.".config/hypr/looknfeel.lua".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/hypr/looknfeel.lua";
+  home.file.".config/hypr/autostart.lua".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/hypr/autostart.lua";
 
   home.file.".config/hypr/scripts/auto-rotate.sh".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/hypr/scripts/auto-rotate.sh";
-  home.file.".config/hypr/scripts/monitor-internal-toggle.sh".source =
-    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/hypr/scripts/monitor-internal-toggle.sh";
-  home.file.".config/hypr/scripts/monitor-internal-mirror-toggle.sh".source =
-    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/hypr/scripts/monitor-internal-mirror-toggle.sh";
-  home.file.".config/hypr/scripts/monitor-recover-watch.sh".source =
-    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/hypr/scripts/monitor-recover-watch.sh";
   home.file.".config/hypr/scripts/workspace-follow-external.sh".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/hypr/scripts/workspace-follow-external.sh";
 

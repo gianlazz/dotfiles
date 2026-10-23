@@ -28,7 +28,7 @@ move_workspaces_to_external() {
 
   hyprctl workspaces -j | jq -r --arg internal "$internal" \
     '.[] | select(.monitor == $internal) | .id' | while read -r ws; do
-    hyprctl dispatch moveworkspacetomonitor "$ws" "$external"
+    hyprctl dispatch "hl.dsp.workspace.move({ workspace = \"$ws\", monitor = \"$external\" })"
   done
 }
 
