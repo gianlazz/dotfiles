@@ -1,7 +1,8 @@
 -- Extra autostart processes.
 
--- Auto-rotate the internal panel from the accelerometer.
-o.launch_on_start("~/.config/hypr/scripts/auto-rotate.sh")
+-- Auto-rotate the internal panel from the accelerometer (disabled for now).
+-- Re-enable by uncommenting the line below.
+-- o.launch_on_start("~/.config/hypr/scripts/auto-rotate.sh")
 
 -- Move workspaces to an external monitor when one is connected.
 o.launch_on_start("~/.config/hypr/scripts/workspace-follow-external.sh")
